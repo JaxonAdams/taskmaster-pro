@@ -104,38 +104,47 @@ $(".list-group").on("click", "span", function() {
   // Swap out elements
   $(this).replaceWith(dateInput);
 
+  // Use datepicker
+  dateInput.datepicker({
+    minDate: 1,
+    onClose: function() {
+      // when calendar is closed, force a "change" event on the `dateInput`
+      $(this).trigger("change");
+    }
+  });
+
   // Automatically focus on new element
   dateInput.trigger("focus");
 });
 
-// Change the date back to text
-$(".list-group").on("blur", "input[type='text']", function() {
-  // get the current text
+// value of due date was changed
+$(".list-group").on("change", "input[type='text']", function() {
+  // get current text
   var date = $(this)
-  .val()
-  .trim();
+    .val()
+    .trim();
 
-  // Get the parent ul's id attribute
+  // get the parent ul's id attribute
   var status = $(this)
-  .closest(".list-group")
-  .attr("id")
-  .replace("list-", "");
+    .closest(".list-group")
+    .attr("id")
+    .replace("list-", "");
 
-  // Get the task's position in the list of other li elements
+  // get the task's position in the list of other li elements
   var index = $(this)
-  .closest(".list-group")
-  .index();
+    .closest(".list-group-item")
+    .index();
 
-  // Update task in array and save to localStorage
+  // update task in array and re-save to localstorage
   tasks[status][index].date = date;
   saveTasks();
 
-  // Recreate span element with bootstrap classes
+  // recreate span element with bootstrap classes
   var taskSpan = $("<span>")
-  .addClass("badge badge-primary badge-pill")
-  .text(date);
+    .addClass("badge badge-primary badge-pill")
+    .text(date);
 
-  // Replace input with span element
+  // replace input with span element
   $(this).replaceWith(taskSpan);
 });
 
@@ -149,6 +158,11 @@ $("#task-form-modal").on("show.bs.modal", function() {
 $("#task-form-modal").on("shown.bs.modal", function() {
   // highlight textarea
   $("#modalTaskDescription").trigger("focus");
+});
+
+// Modal datepicker
+$("#modalDueDate").datepicker({
+  minDate: 1
 });
 
 // save button in modal was clicked
