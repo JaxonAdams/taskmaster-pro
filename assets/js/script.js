@@ -13,6 +13,7 @@ var createTask = function(taskText, taskDate, taskList) {
   // append span and p element to parent li
   taskLi.append(taskSpan, taskP);
 
+  auditTask(taskLi);
 
   // append to ul list on the page
   $("#list-" + taskList).append(taskLi);
@@ -42,6 +43,23 @@ var loadTasks = function() {
 
 var saveTasks = function() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
+};
+
+// Check due date
+var auditTask = function(taskEl) {
+  // Get the date from the task element
+  var date = $(taskEl).find("span").text().trim();
+
+  // Convert to moment object at 5:00 pm
+  var time = moment(date, "L").set("hour", 17);
+
+  // Remove any old classes from the element
+  $(taskEl).removeClass("list-group-item-warning list-group-item-danger");
+
+  // Apply new class if task is near or overdue
+  if (moment().isAfter(tme)) {
+    taskEl.addClass("list-group-item-danger");
+  }
 };
 
 // Change text to form on click
