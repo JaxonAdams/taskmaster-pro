@@ -45,7 +45,6 @@ var saveTasks = function() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
 };
 
-// Check due date
 var auditTask = function(taskEl) {
   // Get the date from the task element
   var date = $(taskEl).find("span").text().trim();
@@ -57,8 +56,10 @@ var auditTask = function(taskEl) {
   $(taskEl).removeClass("list-group-item-warning list-group-item-danger");
 
   // Apply new class if task is near or overdue
-  if (moment().isAfter(tme)) {
+  if (moment().isAfter(time)) {
     taskEl.addClass("list-group-item-danger");
+  } else if (Math.abs(moment().diff(time, "days")) <= 2) {
+    $(taskEl).addClass("list-group-item-warning");
   }
 };
 
@@ -164,6 +165,9 @@ $(".list-group").on("change", "input[type='text']", function() {
 
   // replace input with span element
   $(this).replaceWith(taskSpan);
+
+  // Check due date
+  auditTask($(taskSpan).closest(".list-group-item"));
 });
 
 // modal was triggered
