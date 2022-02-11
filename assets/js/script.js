@@ -288,4 +288,10 @@ $("#trash").droppable({
 // load tasks for the first time
 loadTasks();
 
-
+// Check task due dates periodically
+setInterval(function() {
+  $(".card .list-group-item").each(function(index, el) {
+    auditTask(el);
+    console.log(el);
+  });
+}, (1000 * 60) * 30);
